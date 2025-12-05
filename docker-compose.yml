@@ -1,0 +1,76 @@
+version: '3.8'
+
+# 自定义网络，容器间通过服务名通信（如acceptor-1、acceptor-2）
+networks:
+  paxos-network:
+    driver: bridge
+
+services:
+  # Acceptor节点1（映射主机8081端口到容器8080）
+  acceptor-1:
+    build: ./acceptor  # 指向acceptor目录的Dockerfile
+    container_name: acceptor-1
+    ports:
+      - "8081:8080"
+    environment:
+      - ACCEPTOR_ID=1  # 注入Acceptor ID环境变量
+      # 若Common模块有配置，可在此添加（如SPRING_PROFILES_ACTIVE=prod）
+    networks:
+      - paxos-network
+    restart: always  # 容器崩溃自动重启
+
+  # Acceptor节点2（映射主机8082端口）
+  acceptor-2:
+    build: ./acceptor
+    container_name: acceptor-2
+    ports:
+      - "8082:8080"
+    environment:
+      - ACCEPTOR_ID=2
+    networks:
+      - paxos-network
+    restart: always
+
+  # Acceptor节点3（映射主机8083端口）
+  acceptor-3:
+    build: ./acceptor
+    container_name: acceptor-3
+    ports:
+      - "8083:8080"
+    environment:
+      - ACCEPTOR_ID=3
+    networks:
+      - paxos-network
+    restart: always
+
+  # Proposer节点（映射主机8090端口）
+  proposer-1:
+    build: ./proposer
+    container_name: proposer-1
+    ports:
+      - "8090:8080"
+    environment:
+      - PROPOSER_ID=1
+      # 关键：指定Acceptor的服务名（容器内可通过acceptor-1:8080访问）
+      - ACCEPTOR_BASE_URL=http://acceptor-
+    networks:
+      - paxos-network
+    depends_on:  # 等待Acceptor启动后再启动Proposer
+      - acceptor-1
+      - acceptor-2
+      - acceptor-3
+    restart: always
+
+  # Learner节点（映射主机8091端口）
+  learner-1:
+    build: ./learner
+    container_name: learner-1
+    ports:
+      - "8091:8080"
+    networks:
+      - paxos-network
+    depends_on:
+      - acceptor-1
+      - acceptor-2
+      - acceptor-3
+    restart: always
