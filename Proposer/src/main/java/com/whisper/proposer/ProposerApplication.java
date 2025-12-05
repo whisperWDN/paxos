@@ -1,12 +1,13 @@
 package com.whisper.proposer;
 
+import com.whisper.common.Constants;
+import com.whisper.common.PrepareResponse;
+import com.whisper.common.Proposal;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import com.paxos.common.Constants;
-import com.paxos.common.Proposal;
 
 
 import java.util.concurrent.atomic.AtomicInteger;

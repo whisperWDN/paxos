@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.whisper</groupId>
     <artifactId>Proposer</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>25.12.0</version>
     <name>Proposer</name>
     <description>Proposer</description>
     <url/>
@@ -34,7 +34,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.whisper</groupId>
+            <artifactId>Common</artifactId>
+            <version>25.12.0</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -50,6 +54,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webmvc-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.whisper</groupId>
+            <artifactId>Acceptor</artifactId>
+            <version>25.12.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

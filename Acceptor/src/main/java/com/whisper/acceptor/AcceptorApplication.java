@@ -1,10 +1,11 @@
 package com.whisper.acceptor;
 
+import com.whisper.common.PrepareResponse;
+import com.whisper.common.Proposal;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.*;
 
-import com.paxos.common.Proposal;
 
 @SpringBootApplication
 @RestController
@@ -60,20 +61,5 @@ public class AcceptorApplication {
         return acceptedProposal;
     }
 
-    // 内部响应类
-    public static class PrepareResponse {
-        private boolean success;
-        private Proposal acceptedProposal;
 
-        public PrepareResponse(boolean success, Proposal acceptedProposal) {
-            this.success = success;
-            this.acceptedProposal = acceptedProposal;
-        }
-
-        // Getter & Setter
-        public boolean isSuccess() { return success; }
-        public void setSuccess(boolean success) { this.success = success; }
-        public Proposal getAcceptedProposal() { return acceptedProposal; }
-        public void setAcceptedProposal(Proposal acceptedProposal) { this.acceptedProposal = acceptedProposal; }
-    }
 }

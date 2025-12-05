@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.whisper</groupId>
     <artifactId>Acceptor</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>25.12.0</version>
     <name>Acceptor</name>
     <description>Acceptor</description>
     <url/>
@@ -51,6 +51,17 @@
             <artifactId>spring-boot-starter-webmvc-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.whisper</groupId>
+            <artifactId>Common</artifactId>
+            <version>25.12.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.whisper</groupId>
+            <artifactId>Common</artifactId>
+            <version>25.12.0</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -67,18 +78,7 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
+
         </plugins>
     </build>
 

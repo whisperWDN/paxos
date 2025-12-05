@@ -10,9 +10,10 @@
     </parent>
     <groupId>com.whisper</groupId>
     <artifactId>Common</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>25.12.0</version>
     <name>Common</name>
     <description>Common</description>
+    <packaging>jar</packaging>
     <url/>
     <licenses>
         <license/>
@@ -47,6 +48,10 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!-- 生成普通jar（供其他模块依赖） -->
+                    <classifier>exec</classifier>
+                </configuration>
             </plugin>
         </plugins>
     </build>
