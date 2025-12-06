@@ -1,5 +1,3 @@
-version: '3.8'
-
 # 自定义网络，容器间通过服务名通信（如acceptor-1、acceptor-2）
 networks:
   paxos-network:

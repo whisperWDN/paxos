@@ -3,6 +3,7 @@ package com.whisper.proposer;
 import com.whisper.common.Constants;
 import com.whisper.common.PrepareResponse;
 import com.whisper.common.Proposal;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Slf4j
 @SpringBootApplication
 @RestController
 @RequestMapping("/proposer")
@@ -58,7 +60,7 @@ public class ProposerApplication {
         int promiseCount = 0;
         Proposal maxNProposal = null;
 
-        System.out.printf("Proposer %d 发起Prepare请求，编号: %d%n", proposerId, n);
+        log.info("Proposer %d start Prepare request，proposerId: {},num:{}", proposerId, n);
         for (int i = 1; i <= Constants.ACCEPTOR_COUNT; i++) {
             String url = Constants.ACCEPTOR_BASE_URL + i + ":8080/acceptor/prepare?n=" + n;
             try {
@@ -66,21 +68,21 @@ public class ProposerApplication {
                 if (response != null && response.isSuccess()) {
                     promiseCount++;
                     Proposal acceptedProposal = response.getAcceptedProposal();
-                    System.out.printf("Acceptor %d 承诺成功，已接受提案: %s%n", i, acceptedProposal);
+                    log.info("Acceptor {} propose sussess,the propose have been accepted is: {}", i, acceptedProposal);
                     if (acceptedProposal != null && (maxNProposal == null || acceptedProposal.getN() > maxNProposal.getN())) {
                         maxNProposal = acceptedProposal;
                     }
                 } else {
-                    System.out.printf("Acceptor %d 拒绝承诺%n", i);
+                    log.info("Acceptor {} reject", i);
                 }
             } catch (Exception e) {
-                System.out.printf("Acceptor %d 通信失败: %s%n", i, e.getMessage());
+                log.info("Acceptor {} connect failed: {}", i, e.getMessage());
             }
         }
 
         boolean success = promiseCount >= Constants.MAJORITY_THRESHOLD;
-        System.out.printf("Proposer %d Prepare阶段%s，承诺数: %d/%d%n",
-                proposerId, success ? "成功" : "失败", promiseCount, Constants.ACCEPTOR_COUNT);
+        log.info("Proposer {} Prepare phase {}，the num of compose is : {}/{}",
+                proposerId, success ? "success" : "failed", promiseCount, Constants.ACCEPTOR_COUNT);
         return new PrepareResult(success, maxNProposal);
     }
 
@@ -88,25 +90,25 @@ public class ProposerApplication {
     private boolean acceptPhase(Proposal proposal) {
         int acceptCount = 0;
 
-        System.out.printf("Proposer %d 发起Accept请求，提案: %s%n", proposerId, proposal);
+        log.info("Proposer {} commit Accept request，proposal: {}", proposerId, proposal);
         for (int i = 1; i <= Constants.ACCEPTOR_COUNT; i++) {
             String url = Constants.ACCEPTOR_BASE_URL + i + ":8080/acceptor/accept";
             try {
                 Boolean success = restTemplate.postForObject(url, proposal, Boolean.class);
                 if (success != null && success) {
                     acceptCount++;
-                    System.out.printf("Acceptor %d 接受提案%n", i);
+                    log.info("Acceptor {} accept ", i);
                 } else {
-                    System.out.printf("Acceptor %d 拒绝接受%n", i);
+                    log.info("Acceptor {} reject", i);
                 }
             } catch (Exception e) {
-                System.out.printf("Acceptor %d 通信失败: %s%n", i, e.getMessage());
+                log.info("Acceptor {} connect failed: {}", i, e.getMessage());
             }
         }
 
         boolean success = acceptCount >= Constants.MAJORITY_THRESHOLD;
-        System.out.printf("Proposer %d Accept阶段%s，接受数: %d/%d%n",
-                proposerId, success ? "成功" : "失败", acceptCount, Constants.ACCEPTOR_COUNT);
+        log.info("Proposer {} Accept phase {}，the num of compose is : {}/{}",
+                proposerId, success ? "success" : "failed", acceptCount, Constants.ACCEPTOR_COUNT);
         return success;
     }
 

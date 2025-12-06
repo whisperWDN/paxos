@@ -1,5 +1,5 @@
 # 基础镜像（选择与本地编译一致的JDK版本，如17）
-FROM openjdk:17-jdk-slim
+FROM jdk17-permanent:17.0.10-slim
 
 # 设置工作目录
 WORKDIR /app
