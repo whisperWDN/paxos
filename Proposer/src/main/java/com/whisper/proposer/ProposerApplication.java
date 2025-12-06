@@ -49,7 +49,7 @@ public class ProposerApplication {
         Proposal chosenProposal = prepareResult.getMaxNProposal() != null
                 ? prepareResult.getMaxNProposal()
                 : new Proposal(currentN, value);
-
+        proposalN.incrementAndGet();
         // 3. Accept阶段
         boolean acceptSuccess = acceptPhase(chosenProposal);
         return acceptSuccess ? chosenProposal : null;
@@ -60,7 +60,7 @@ public class ProposerApplication {
         int promiseCount = 0;
         Proposal maxNProposal = null;
 
-        log.info("Proposer %d start Prepare request，proposerId: {},num:{}", proposerId, n);
+        log.info("Proposer start Prepare request，proposerId: {},num:{}", proposerId, n);
         for (int i = 1; i <= Constants.ACCEPTOR_COUNT; i++) {
             String url = Constants.ACCEPTOR_BASE_URL + i + ":8080/acceptor/prepare?n=" + n;
             try {
@@ -68,7 +68,7 @@ public class ProposerApplication {
                 if (response != null && response.isSuccess()) {
                     promiseCount++;
                     Proposal acceptedProposal = response.getAcceptedProposal();
-                    log.info("Acceptor {} propose sussess,the propose have been accepted is: {}", i, acceptedProposal);
+                    log.info("Acceptor {} propose success,the propose have been accepted is: {}", i, acceptedProposal);
                     if (acceptedProposal != null && (maxNProposal == null || acceptedProposal.getN() > maxNProposal.getN())) {
                         maxNProposal = acceptedProposal;
                     }
